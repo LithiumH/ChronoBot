@@ -12,8 +12,8 @@ def similarity(mystring1, mystring2):
     list2 = mystring2.split(" ")
     for word in list1:
         if word in stop_words:
-            list1.pop(word)
+            list1.remove(word)
     for word in list2:
         if word in stop_words:
-            list2.pop(word)
+            list2.remove(word)
     return distance.levenshtein(list1, list2, normalized=True)
