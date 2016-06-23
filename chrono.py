@@ -70,7 +70,7 @@ def get_answer(question, threshold=0.05):
 
 def set_answer(question, answer, user):
 	"""This function sets a question to an answer. user param means whoever answered it"""
-	date_time = datetime.datetime.utcnow();
+	date_time = datetime.utcnow();
 	cursor = faq.find({'question' : question})
 	if cursor.count() > 0:
 		update_result = faq.update_one({'question': question}, {

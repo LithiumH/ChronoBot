@@ -8,4 +8,4 @@ class User(object):
 		self.team = ''
 		self.step = 0
 		self.email = ''
-		self.start_date = start_date
+		self.start_date = None
