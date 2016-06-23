@@ -50,7 +50,7 @@ def generate_specific(fullname, date, mon, tue, wed, thur, fri):
 	sheet['K19'] = fri
 	sheet['O8'] = date
 	sheet['K35'] = date
-	add_signature_image(sheet)
+	#add_signature_image(sheet)
 	new_file_name = './temp/' + fullname + '_Timesheet' + '_' + date + '_' + '.xlsx'
 	xfile.save(new_file_name)
 	return new_file_name
