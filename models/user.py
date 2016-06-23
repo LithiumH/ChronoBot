@@ -5,4 +5,5 @@ class User(object):
 		self.role = ''
 		self.manager = ''
 		self.state = 'register me'
+		self.team = ''
 		self.step = 0

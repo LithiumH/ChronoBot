@@ -42,7 +42,7 @@ class Listener(object):
 							if unique_id not in self.user_map:
 								if 'register me' in text:
 									self.user_map[unique_id] = User(unique_id)
-									await websocket.send(self.make_json(channel, ping + 'What is your name?'))
+									await websocket.send(self.make_json(channel, ping + 'What is your full name?'))
 								else:
 									await websocket.send(self.make_json(channel, ping + 'You seem to not be in the database, please type register me.'))
 							else:
@@ -57,8 +57,11 @@ class Listener(object):
 										await websocket.send(self.make_json(channel, ping + 'What is your manager\'s first name'))
 									elif step == 1:
 										user.manager = text
-										await websocket.send(self.make_json(channel, ping + 'What is your role?'))
+										await websocket.send(self.make_json(channel, ping + 'What is your Team?'))
 									elif step == 2:
+										user.team = text
+										await websocket.send(self.make_json(channel, ping + 'What is your role?'))
+									elif step == 3:
 										user.role = text
 										await websocket.send(self.make_json(channel, ping + 'Registration complete! Name: {}, Manager: {}, Role: {}'.format(user.name, user.manager, user.role)))
 										user.state = ''
@@ -108,7 +111,7 @@ class Listener(object):
 			state = 'timesheet-init'
 		elif 'register me' in text:
 			new_text = name + 'You have already registered...'
-		elif text[len(text)] == '?':
+		elif text[len(text) - 1] == '?':
 			new_text = name + 'I noticed you sent a question, let me think...'
 			state = 'faq'
 		else:
