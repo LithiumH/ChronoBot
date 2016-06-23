@@ -69,8 +69,9 @@ class Listener(object):
 								elif user.state == 'timesheet-init':
 									if text == 'yes':
 										date = datetime.date.today()
-										path = self.generate_default(user.name, '{0}-{1}-{2}'.format(date.month, date.day, date.year))
-										send_email(user.name,lastday(date, 'sunday'), 'myTimeSheet.xlsx', path)
+										new_date = user.name,lastday(date, 'sunday')
+										path = self.generate_default(user.name, new_date)
+										send_email(user.name,new_date, 'myTimeSheet.xlsx', path)
 										await websocket.send(self.make_json(channel, ping + 'BOOM! Your timesheet is sent'))
 									else:
 										args = text.split(' ')
