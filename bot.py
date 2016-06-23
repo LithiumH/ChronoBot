@@ -63,7 +63,7 @@ class Listener(object):
 										await websocket.send(self.make_json(channel, ping + 'What is your role?'))
 									elif step == 3:
 										user.role = text
-										await websocket.send(self.make_json(channel, ping + 'Registration complete! Name: {}, Manager: {}, Role: {}'.format(user.name, user.manager, user.role)))
+										await websocket.send(self.make_json(channel, ping + 'Registration complete! Name: {}, Manager: {}, Team: {}, Role: {}'.format(user.name, user.manager, user.team, user.role)))
 										user.state = ''
 									user.step += 1
 								elif user.state == 'timesheet-init':
