@@ -40,6 +40,7 @@ def generate_specific(fullname, date, mon, tue, wed, thur, fri):
 	"""
 	the date should be in the format mm-dd-yyyy
 	"""
+	new_date = lastday(date, 'sunday')
 	xfile = openpyxl.load_workbook(filepath)
 	sheet = xfile.get_sheet_by_name('Time Card')
 	sheet['C8'] = fullname
@@ -48,17 +49,18 @@ def generate_specific(fullname, date, mon, tue, wed, thur, fri):
 	sheet['G19'] = wed
 	sheet['I19'] = thur
 	sheet['K19'] = fri
-	sheet['O8'] = date
-	sheet['K35'] = date
+	sheet['O8'] = new_date
+	sheet['K35'] = new_date
 	#add_signature_image(sheet)
-	new_file_name = './temp/' + fullname + '_Timesheet' + '_' + date + '_' + '.xlsx'
+	new_file_name = './temp/' + fullname + '_Timesheet' + '_' + new_date + '_' + '.xlsx'
 	xfile.save(new_file_name)
 	return new_file_name
 
-def send_email(name, d, filename, filepath):
+def send_email(name, date, filename, filepath):
 	msg = MIMEMultipart()
 	msg['From'] = fromaddr
 	msg['To'] = ','.join(toaddr)
+	d = lastday(date, 'sunday')
 	last_week = d - timedelta(days=6)
 	date = last_week.strftime('%m/%d') + " - " + d.strftime('%m/%d')
 	msg['Subject'] = "Timesheet: " + date
