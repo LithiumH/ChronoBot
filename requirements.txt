@@ -2,3 +2,5 @@ websockets
 openpyxl
 pymongo
 requests
+distance
+stop_words

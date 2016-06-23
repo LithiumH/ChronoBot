@@ -1,6 +1,7 @@
 import pymongo
 from pymongo import MongoClient
 import datetime
+from similarity import similarity
 
 
 client = MongoClient('localhost', 27017)
@@ -38,7 +39,7 @@ def find_latest_rand():
 def distance(q1, q2):
 	if q1 == q2:
 		return 0
-	return float('inf')
+	return similarity(q1, q2)
 
 def get_answer(question, threshold=3):
 	"""This function gets the closest answer to a question. The question param is a string

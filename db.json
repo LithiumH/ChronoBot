@@ -1,0 +1,4 @@
+{"_id":{"$oid":"576c1593c2cd44bd1b17a248"},"log":"Today I did nothing but staring at my computer","author":"Haojun","date":"2016-06-23"}
+{"_id":{"$oid":"576c164cc2cd44bd1b17a249"},"log":"Today I did nothing but staring at my computer","author":"Haojun","date":{"$date":"2016-06-23T17:03:04.192Z"}}
+{"_id":{"$oid":"576c1b92c2cd44bd1b17a24a"},"log":"Today I did nothing but staring at my computer","author":"Haojun","date":{"$date":"2016-06-23T17:25:38.516Z"}}
+{"_id":{"$oid":"576c1bedc2cd44bd1b17a24b"},"log":"NOTHING","author":"Haojun","date":{"$date":"2016-06-23T17:27:09.057Z"}}
