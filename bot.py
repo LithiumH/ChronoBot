@@ -88,9 +88,29 @@ class Listener(object):
                                             send_email(user.name, lastday(date, 'sunday'), 'myTimeSheet.xlsx', path, user.manager)
                                     user.state = ''
                                 elif user.state == 'quit':
-                                    pass
-                                elif user.state == 'faq':
-                                    await websocket.send(self.make_json(channel, ping + get_answer(text)))
+                                    for u in self.user_map:
+                                        set_user(u, self.user_map[u])
+                                    chrono = False
+                                    continue
+                                if user.state == 'faq':
+                                    if get_answer(text):
+                                        await websocket.send(self.make_json(channel, ping + get_answer(text, 0.5)))
+                                        user.state = ''
+                                    elif text == 'no' and user.step == 6: # Using step as indicator of which state...
+                                        await websocket.send(self.make_json(channel, ping + 'That\'s too bad.'))
+                                        user.state = ''
+                                    elif 'yes' in text and user.step == 6:
+                                        user.step = 10
+                                        await websocket.send(self.make_json(channel, ping + 'What is the answer?'))
+                                    elif user.step == 10:
+                                        set_answer(user.question, text, user.name)
+                                        await websocket.send(self.make_json(channel, ping + 'Thank you, I am now smarter.'))
+                                        user.step = 0
+                                        user.state = ''
+                                    else:
+                                        user.question = text
+                                        user.step = 6
+                                        await websocket.send(self.make_json(channel, 'I do not have an answer to that question. Do you know the answer? (yes or no)'))
 
         asyncio.get_event_loop().run_until_complete(main())
 

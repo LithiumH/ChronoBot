@@ -3,6 +3,7 @@ from pymongo import MongoClient
 import datetime
 from similarity import similarity
 from models.user import User
+from datetime import datetime
 
 
 client = MongoClient('localhost', 27017)
@@ -14,22 +15,35 @@ users = db.users
 def log_activity(user, log):
     return log_activity_time(user, datetime.datetime.utcnow(), log)
 
-def log_activity_time(user, date_time, log):
-    post = {'author': user,
-            'date': date_time,
-            'log': log}
-    post_id = logs.insert_one(post).inserted_id
-    return post_id
+def log_activity_time(user, date_time, log, start_date):
+	dur = date_time - start_date
+	post = {'author': user,
+			'date': date_time,
+			'duration': dur.days,
+			'log': log}
+	post_id = logs.insert_one(post).inserted_id
+	return post_id
 
-def find_latest_datetime(user, date_time):
-	date_beginning = datetime.datetime(date_time.year, date_time.month, date_time.day)
-	if user:
-		posts = logs.find({'author' : user, \
-				'date' : {'$lt': date_time, '$gt': date_beginning}}).sort('date')
+def previous(userid, date_time):
+	user = get_user(userid)
+	dur = date_time - user.start_date
+	dur = dur.days
+	if get_user(userid) != None:
+		post = logs.find({'author': user.name, \
+						   'team': user.team, \
+						   'date': {'$lt': date_time, '$gt': user.start_date}}).sort({'date': -1}).limit(1)
 	else:
-		posts = logs.find({'date' : {'$lt': date_time, '$gt': date_beginning}}).sort('date')
-	latest = posts[posts.count() - 1]
-	return latest
+		post1 = logs.find({'team': user.team, \
+						   'duration': {'$gte': dur}}).sort({'duration': 1}).limit(1)
+		post2 = logs.find({'team': user.team, \
+						   'duration': {'$lte': dur}}).sort({'duration': -1}).limit(1)
+		diff1 = post1[0]['duration'] - dur
+		diff2 = dur - post2[0]['duration']
+		if diff1 > diff2:
+			post = post1
+		else:
+			post = post2
+	return post
 
 def find_latest(user):
     return find_latest_datetime(user, datetime.datetime.utcnow())
@@ -56,7 +70,7 @@ def get_answer(question, threshold=0.05):
 
 def set_answer(question, answer, username):
 	"""This function sets a question to an answer. user param means whoever answered it"""
-	date_time = datetime.datetime.utcnow();
+	date_time = datetime.utcnow();
 	cursor = faq.find({'question' : question})
 	if cursor.count() > 0:
 		update_result = faq.update_one({'question': question}, {
