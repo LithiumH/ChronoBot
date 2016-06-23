@@ -54,7 +54,7 @@ def get_answer(question, threshold=0.05):
 			min_dist, best_post = new_dist, post
 	return best_post['answer'] if min_dist < threshold else None
 
-def set_answer(question, answer, user):
+def set_answer(question, answer, username):
 	"""This function sets a question to an answer. user param means whoever answered it"""
 	date_time = datetime.datetime.utcnow();
 	cursor = faq.find({'question' : question})
@@ -62,29 +62,42 @@ def set_answer(question, answer, user):
 		update_result = faq.update_one({'question': question}, {
 			'$set' : {
 				'answer' : answer,
-				'user' : user,
+				'user' : username,
 				'last_modified' : date_time}})
 		return update_result.modified_count > 0
 	post = {'question': question,
 			'answer': answer,
 			'last_modified': date_time,
-			'user': user}
+			'user': username}
 	post_id = faq.insert_one(post).inserted_id
 	return True
+
+def convert_to_map(user):
+	pass
+
+def convert_to_user(user_id, data_map):
+	user = User(user_id)
+	user.name = data_map['name']
+	user.role = data_map['role']
+	user.manager = data_map['manager']
+	user.state = data_map['state']
+	user.team = data_map['team']
+	user.step = data_map['step']
+	user.email = data_map['email']
+	return user
+
+def get_all_user():
+	cursor = user.find()
+	users = []
+	for u in cursor:
+		users += [convert_to_user(u['user_id'], u['data_map'])]
+	return users
 
 def get_user(user_id):
 	cursor = users.find({'user_id' : user_id})
 	if cursor.count() > 0:
 		data_map = cursor[0]['data_map']
-		user = User(user_id)
-		user.name = data_map['name']
-		user.role = data_map['role']
-		user.manager = data_map['manager']
-		user.state = data_map['state']
-		user.team = data_map['team']
-		user.step = data_map['step']
-		user.email = data_map['email']
-		return user
+		return convert_to_user(user_id, data_map)
 	return None
 
 def set_user(user_id, user):
