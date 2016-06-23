@@ -4,6 +4,7 @@ import requests
 import json
 import time
 import datetime
+import pickle
 from timeSheetMaker import *
 from constants import *
 from models.user import *
@@ -13,6 +14,7 @@ class Listener(object):
 		# self.state = '' # state can be timesheet-init, or an empty string
 		self.chrono = False
 		self.user_map = {}
+
 
 	def start(self):
 		token = 'xoxb-53468281812-uwQohEw49nWfhcy8N2myHv8H'
@@ -29,33 +31,36 @@ class Listener(object):
 					print(event)			
 					if 'type' in event and event['type'] == 'message':
 						text = event['text']
-						if '<@U1KDS89PW>' in text:
+						if '<@U1KDS89PW>' in text or event['channel'] == 'D1KDUJZFG':
 							self.chrono = True
 						if self.chrono:
 							unique_id = event['user']
 							channel = event['channel']
+							ping = '<@{}> '.format(unique_id)
+							if event['channel'] == 'D1KDUJZFG':
+								ping = ''
 							if unique_id not in self.user_map:
 								if 'register me' in text:
 									self.user_map[unique_id] = User(unique_id)
-									await websocket.send(self.make_json(channel, '<@{}> What is your name?'.format(user.unique_id)))
+									await websocket.send(self.make_json(channel, ping + 'What is your name?'))
 								else:
-									await websocket.send(self.make_json(channel, '<@{}> You seem to not be in the database, please type register me.'.format(user.unique_id)))
+									await websocket.send(self.make_json(channel, ping + 'You seem to not be in the database, please type register me.'))
 							else:
 								user = self.user_map[unique_id]
 								step = user.step
 								if user.state == '':
-									user.state, new_text = self.switch_state(text, user.unique_id)
+									user.state, new_text = self.switch_state(text, ping)
 									await websocket.send(self.make_json(channel, new_text))
 								elif user.state == 'register me':
 									if step == 0:
 										user.name = text
-										await websocket.send(self.make_json(channel, '<@{}> What is your manager\'s first name'.format(user.unique_id)))
+										await websocket.send(self.make_json(channel, ping + 'What is your manager\'s first name'))
 									elif step == 1:
 										user.manager = text
-										await websocket.send(self.make_json(channel, '<@{}> What is your role?'.format(user.unique_id)))
+										await websocket.send(self.make_json(channel, ping + 'What is your role?'))
 									elif step == 2:
 										user.role = text
-										await websocket.send(self.make_json(channel, '<@{}> Registration complete! Name: {}, Manager: {}, Role: {}'.format(user.unique_id, user.name, user.manager, user.role)))
+										await websocket.send(self.make_json(channel, ping + 'Registration complete! Name: {}, Manager: {}, Role: {}'.format(user.name, user.manager, user.role)))
 										user.state = ''
 									user.step += 1
 								elif user.state == 'timesheet-init':
@@ -63,16 +68,17 @@ class Listener(object):
 										date = datetime.date.today()
 										path = self.generate_default(user.name, '{0}-{1}-{2}'.format(date.month, date.day, date.year))
 										send_email(user.name,lastday(date, 'sunday'), 'myTimeSheet.xlsx', path)
-										await websocket.send(self.make_json(channel, '<@{}> BOOM! Your timesheet is sent'.format(user.unique_id)))
+										await websocket.send(self.make_json(channel, ping + 'BOOM! Your timesheet is sent'))
 									else:
 										args = text.split(' ')
 										if len(args) != 6:
-											await websocket.send(self.make_json(channel, '<@{}> Sorry, wrong syntax. Please start over'.format(user.unique_id)))
+											await websocket.send(self.make_json(channel, ping + 'Sorry, wrong syntax. Please start over'))
 										else:
 											path = generate_specific(user.name, args[0], args[1], args[2], args[3], args[4], args[5])
 											date = datetime.datetime.strptime(args[0], '%m-%d-%Y')
 											send_email(user.name, lastday(date, 'sunday'), 'myTimeSheet.xlsx', path)
 									user.state = ''
+
 		asyncio.get_event_loop().run_until_complete(main())
 
 	def get_user_name(self, internal_name):
@@ -97,16 +103,17 @@ class Listener(object):
 	def switch_state(self, text, name):
 		state = ''
 		if 'timesheet' in text:
-			new_text = '<@{}> Would you like to use defaults? If not specify the date'.format(name) + \
+			new_text = name + 'Would you like to use defaults? If not specify the date' + \
 					'[mm-dd-yyyy] and hours worked each day separated by spaces.'
 			state = 'timesheet-init'
 		elif 'register me' in text:
-			new_text = '<@{}> You have already registered...'.format(name)
-			state = ''
+			new_text = name + 'You have already registered...'
+		elif text[len(text)] == '?':
+			new_text = name + 'I noticed you sent a question, let me think...'
+			state = 'faq'
 		else:
-			new_text = '<@{}> Sorry I\'m too dumb to understand'.format(name)
+			new_text = name + 'Sorry I\'m too dumb to understand'
 		return state, new_text
-
 
 l = Listener()
 l.start()
