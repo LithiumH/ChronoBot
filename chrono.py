@@ -2,12 +2,14 @@ import pymongo
 from pymongo import MongoClient
 import datetime
 from similarity import similarity
+from models.user import User
 
 
 client = MongoClient('localhost', 27017)
 db = client.interns
 logs = db.logs
 faq = db.faq
+users = db.users
 
 def log_activity(user, log):
 	return log_activity_time(user, datetime.datetime.utcnow(), log)
@@ -25,8 +27,7 @@ def find_latest_datetime(user, date_time):
 		posts = logs.find({'author' : user, \
 				'date' : {'$lt': date_time, '$gt': date_beginning}}).sort('date')
 	else:
-		posts = logs.find({'date' : {'$lt': date_time, '$gt': date_beginning}})
-								.sort('date')
+		posts = logs.find({'date' : {'$lt': date_time, '$gt': date_beginning}}).sort('date')
 	latest = posts[posts.count() - 1]
 	return latest
 
@@ -41,7 +42,7 @@ def distance(q1, q2):
 		return 0
 	return similarity(q1, q2)
 
-def get_answer(question, threshold=3):
+def get_answer(question, threshold=0.05):
 	"""This function gets the closest answer to a question. The question param is a string
 	This function returns None if there is not a question similar enough.
 	"""
@@ -63,11 +64,45 @@ def set_answer(question, answer, user):
 				'answer' : answer,
 				'user' : user,
 				'last_modified' : date_time}})
-		return update_result.modified_count() > 0
+		return update_result.modified_count > 0
 	post = {'question': question,
 			'answer': answer,
 			'last_modified': date_time,
 			'user': user}
 	post_id = faq.insert_one(post).inserted_id
 	return True
+
+def get_user(user_id):
+	cursor = users.find({'user_id' : user_id})
+	if cursor.count() > 0:
+		data_map = cursor[0]['data_map']
+		user = User(user_id)
+		user.name = data_map['name']
+		user.role = data_map['role']
+		user.manager = data_map['manager']
+		user.state = data_map['state']
+		user.team = data_map['team']
+		user.step = data_map['step']
+		user.email = data_map['email']
+		return user
+	return None
+
+def set_user(user_id, user):
+	data_map = {'name' : user.name,
+			'role' : user.role,
+			'manager' : user.manager,
+			'state' : user.state,
+			'team' : user.team,
+			'step' : user.step,
+			'email' : user.email}
+	this_user = get_user(user_id)
+	if this_user:
+		update_result = users.update_one({'user_id' : user_id}, {
+			'$set': {'data_map' : data_map}})
+		return update_result.modified_count > 0
+	post = {'user_id' : user_id,
+			'data_map' : data_map}
+	post_id = users.insert_one(post).inserted_id
+	return True
+
 

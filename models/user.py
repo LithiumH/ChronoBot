@@ -7,3 +7,4 @@ class User(object):
 		self.state = 'register me'
 		self.team = ''
 		self.step = 0
+		self.email = ''
