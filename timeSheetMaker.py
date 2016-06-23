@@ -4,11 +4,13 @@ import datetime
 from datetime import timedelta
 import time
 import smtplib
+from openpyxl.drawing.image import Image
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email import encoders
 from constants import *
+
 
 toaddr = ["appdynamicshackthon@gmail.com"]
 fromaddr = "appdynamicshackthon@gmail.com"
@@ -18,6 +20,15 @@ def lastday(d, day_name):
 	target_day = days_of_week.index(day_name.lower())
 	delta_day = target_day - d.isoweekday()
 	return d + timedelta(days=delta_day)
+
+def add_signature_image(sheet):
+	xfile = openpyxl.load_workbook(filepath)
+	sheet = xfile.get_sheet_by_name('Time Card')
+	img = Image('signature_scan.gif')
+	img.drawing.width = 100
+	img.drawing.height = 50
+	img.anchor(sheet.cell('E35'))
+	sheet.add_image(img)
 
 def generate():
 	date = datetime.date.today()
@@ -39,6 +50,7 @@ def generate_specific(fullname, date, mon, tue, wed, thur, fri):
 	sheet['K19'] = fri
 	sheet['O8'] = date
 	sheet['K35'] = date
+	add_signature_image(sheet)
 	new_file_name = './temp/' + fullname + '_Timesheet' + '_' + date + '_' + '.xlsx'
 	xfile.save(new_file_name)
 	return new_file_name
@@ -70,4 +82,13 @@ def send_email(name, d, filename, filepath):
 	text = msg.as_string()
 	server.sendmail(fromaddr, toaddr, text)
 	server.quit()
+
+#CURRENTLY UNUSED -- USE THIS IN CASE WE WANT A TEXT SIGNATURE INSTAED OF THE IMAGE
+def add_signature_text(filename):
+	xfile = openpyxl.load_workbook(filepath)
+	sheet = xfile.get_sheet_by_name('Time Card')
+	new_file_name = './temp/' + fullname + '_Timesheet' + '_' + date + '_' + '.xlsx'
+	xfile.save(new_file_name)
+	return new_file_name
+
 
