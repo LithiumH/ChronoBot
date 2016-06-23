@@ -71,7 +71,7 @@ class Listener(object):
 										date = datetime.date.today()
 										new_date = lastday(date, 'sunday')
 										path = self.generate_default(user.name, new_date)
-										send_email(user.name,new_date, 'myTimeSheet.xlsx', path)
+										send_email(user.name,new_date, 'myTimeSheet.xlsx', path, user.manager)
 										await websocket.send(self.make_json(channel, ping + 'BOOM! Your timesheet is sent'))
 									else:
 										args = text.split(' ')
@@ -80,7 +80,7 @@ class Listener(object):
 										else:
 											path = generate_specific(user.name, args[0], args[1], args[2], args[3], args[4], args[5])
 											date = datetime.datetime.strptime(args[0], '%m-%d-%Y')
-											send_email(user.name, lastday(date, 'sunday'), 'myTimeSheet.xlsx', path)
+											send_email(user.name, lastday(date, 'sunday'), 'myTimeSheet.xlsx', path, user.manager)
 									user.state = ''
 
 		asyncio.get_event_loop().run_until_complete(main())

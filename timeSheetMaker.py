@@ -55,7 +55,7 @@ def generate_specific(fullname, date, mon, tue, wed, thur, fri):
 	xfile.save(new_file_name)
 	return new_file_name
 
-def send_email(name, d, filename, filepath):
+def send_email(name, d, filename, filepath, manager):
 	msg = MIMEMultipart()
 	msg['From'] = fromaddr
 	msg['To'] = ','.join(toaddr)
@@ -63,8 +63,7 @@ def send_email(name, d, filename, filepath):
 	date = last_week.strftime('%m/%d') + " - " + d.strftime('%m/%d')
 	msg['Subject'] = "Timesheet: " + date
 
-	manager = "YOUR MENTOR" # TODO this would be another constant
-	toperson = "Heidi & " + manager
+	toperson = manager
 	body = "Dear " + toperson + ",\n" + "\nAttached is the timesheet for your approval.\n" + "\nBest,\n" + name
 
 	msg.attach(MIMEText(body, 'plain'))
