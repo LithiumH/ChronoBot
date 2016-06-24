@@ -66,7 +66,7 @@ def send_email(name, email,d, filename, filepath, manager):
 	msg['To'] = toaddr
 	last_week = d - timedelta(days=6)
 	date = last_week.strftime('%m/%d') + " - " + d.strftime('%m/%d')
-	msg['Subject'] = "Timesheet: " + date
+	msg['Subject'] = "Timesheet: " + name + " " + date
 
 	toperson = manager
 	body = "Dear " + toperson + ",\n" + "\nAttached is the timesheet for your approval.\n" + "\nBest,\n" + name
