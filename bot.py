@@ -88,7 +88,7 @@ class Listener(object):
                             elif user.state == 'timesheet-init':
                                 if text == 'yes':
                                     date = datetime.date.today()
-                                    new_date = lastday(date, 'sunday')
+                                    new_date = closest_sunday(date)
                                     path = self.generate_default(user.name, user.role, new_date)
                                     send_email(user.name, user.email, new_date, 'myTimeSheet.xlsx', path, user.manager)
                                     await websocket.send(self.make_json(channel, ping + 'BOOM! Your timesheet is sent'))
@@ -97,10 +97,10 @@ class Listener(object):
                                     if len(args) != 6:
                                         await websocket.send(self.make_json(channel, ping + 'Sorry, wrong syntax. Please start over'))
                                     else:
-                                        new_date = lastday(date, 'sunday')
+                                        new_date = closest_sunday(date)
                                         path = generate_specific(user.name, new_date, user.role, args[0], args[1], args[2], args[3], args[4], args[5])
                                         date = datetime.datetime.strptime(args[0], '%m-%d-%Y')
-                                        send_email(user.name, user.email, lastday(date, 'sunday'), 'myTimeSheet.xlsx', path, user.manager)
+                                        send_email(user.name, user.email, closest_sunday(date), 'myTimeSheet.xlsx', path, user.manager)
                                 user.state = ''
                             elif user.state == 'quit':
                                 for k,v in self.user_map.iteritems():
