@@ -108,15 +108,15 @@ class Listener(object):
                                 user.chrono = False
                                 continue
                             if user.state == 'faq':
-                                if get_answer(text):
-                                    await websocket.send(self.make_json(channel, ping + get_answer(text, 0.5)))
-                                    user.state = ''
-                                elif text == 'no' and user.step == 6: # Using step as indicator of which state...
+                                if text == 'no' and user.step == 6: # Using step as indicator of which state...
                                     await websocket.send(self.make_json(channel, ping + 'That\'s too bad.'))
                                     user.state = ''
                                 elif 'yes' in text and user.step == 6:
                                     user.step = 10
                                     await websocket.send(self.make_json(channel, ping + 'What is the answer?'))
+                                elif get_answer(text, 0.3):
+                                    await websocket.send(self.make_json(channel, ping + get_answer(text, 0.5)))
+                                    user.state = ''
                                 elif user.step == 10:
                                     set_answer(user.question, text, user.name)
                                     await websocket.send(self.make_json(channel, ping + 'Thank you, I am now smarter.'))
@@ -129,8 +129,8 @@ class Listener(object):
                                     await websocket.send(self.make_json(channel,
                                         'I do not have an answer to that question. Do you know the answer? (yes or no)'))
                             if user.state == 'random':
-                                if text[0:4] == 'say ':
-                                    set_conv(text[4:], *user.previous_conv)
+                                if text[0:4] == 'say:':
+                                    set_conv(text[5:], *user.previous_conv)
                                     await websocket.send(self.make_json(channel, 'Ok I\'ll say that next time'))
                                 user.state = ''
                                 user.chrono = False
