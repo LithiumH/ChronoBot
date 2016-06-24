@@ -29,12 +29,14 @@ def previous(user, date_time=None, random=False):
         date_time = datetime.datetime.utcnow()
     dur = date_time - user.start_date
     dur = dur.seconds
-    if not random and user.team and user.start_date:
+    if not random and user.team:
         posts = logs.find({'author': user.unique_id, \
                            'team': user.team})
     else:
         posts = logs.find({'team': user.team, \
                 'duration': {'$lte': dur}})
+    print(posts.count())
+    post = {'log':None}
     if posts.count() > 0:
         maximum = 4 if posts.count() > 5 else posts.count() - 1
         index = rand.randint(0, maximum)

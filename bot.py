@@ -86,8 +86,8 @@ class Listener(object):
                                     set_user(user.unique_id, user)
                                 user.step += 1
                             elif user.state == 'timesheet-init':
+                                date = datetime.date.today()
                                 if text == 'yes':
-                                    date = datetime.date.today()
                                     new_date = closest_sunday(date)
                                     path = self.generate_default(user.name, user.role, new_date)
                                     send_email(user.name, user.email, new_date, 'myTimeSheet.xlsx', path, user.manager)
@@ -98,15 +98,17 @@ class Listener(object):
                                         await websocket.send(self.make_json(channel, ping + 'Sorry, wrong syntax. Please start over'))
                                     else:
                                         new_date = closest_sunday(date)
-                                        path = generate_specific(user.name, new_date, user.role, args[0], args[1], args[2], args[3], args[4], args[5])
+                                        path = generate_specific(user.name, new_date, user.role, args[1], args[2], args[3], args[4], args[5])
                                         date = datetime.datetime.strptime(args[0], '%m-%d-%Y')
                                         send_email(user.name, user.email, closest_sunday(date), 'myTimeSheet.xlsx', path, user.manager)
+                                        await websocket.send(self.make_json(channel, ping + 'BOOM! Your timesheet is sent'))
                                 user.state = ''
+                                user.chrono = False
                             if user.state == 'faq':
-                                if text == 'no' and user.step == 6: # Using step as indicator of which state...
+                                if (text == 'no' or text == 'No') and user.step == 6: # Using step as indicator of which state...
                                     await websocket.send(self.make_json(channel, ping + 'That\'s too bad.'))
                                     user.state = ''
-                                elif 'yes' in text and user.step == 6:
+                                elif ('yes' in text or 'Yes' in text) and user.step == 6:
                                     user.step = 10
                                     await websocket.send(self.make_json(channel, ping + 'What is the answer?'))
                                 elif get_answer(text, 0.5) and user.step != 10:
@@ -153,6 +155,8 @@ class Listener(object):
 
     def switch_state(self, user, text, name):
         state, new_text = '', ''
+        if '<@U1KDS89PW>: ' in text:
+            text = text[len('<@U1KDS89PW>: '):]
         if 'timesheet' in text:
             new_text = name + 'Would you like to use defaults? If not specify the date' + \
                     '[mm-dd-yyyy] and hours worked each day separated by spaces.'
@@ -162,7 +166,7 @@ class Listener(object):
             state = 'quit'
         elif 'register me' in text:
             new_text = name + 'You have already registered...'
-        elif text == 'What have you done today?':
+        elif 'what have you done today?' in text.lower():
             new_text = previous(user, random=True)
         elif text[len(text) - 1] == '?':
             state = 'faq'

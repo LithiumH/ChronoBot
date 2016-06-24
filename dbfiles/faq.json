@@ -1,4 +1,9 @@
-{"_id":{"$oid":"576c6961c2cd44dd298bc22e"},"answer":"b","last_modified":{"$date":"2016-06-23T23:03:29.379Z"},"user":"a","question":"a"}
-{"_id":{"$oid":"576c9ccfc2cd44efa19b1bb6"},"answer":"I’m good","last_modified":{"$date":"2016-06-24T02:37:03.923Z"},"user":"Haojun Li","question":"How are your?"}
 {"_id":{"$oid":"576ca57bc2cd44f2fa00b98a"},"question":"How are you?","answer":"I’m fine","user":"Haojun Li","last_modified":{"$date":"2016-06-24T03:14:03.990Z"}}
+{"_id":{"$oid":"576d7d30b7d8ebea66b83eca"},"question":"What is my name?","answer":"James","last_modified":{"$date":"2016-06-24T18:34:24.397Z"},"user":"James Uejio"}
+{"_id":{"$oid":"576c6961c2cd44dd298bc22e"},"answer":"b","last_modified":{"$date":"2016-06-23T23:03:29.379Z"},"user":"a","question":"a"}
+{"_id":{"$oid":"576d7f30b7d8ebeb4d2e6f7f"},"user":"James Uejio","last_modified":{"$date":"2016-06-24T18:42:56.189Z"},"answer":"Yes!","question":"Is Lee's best place to get lunch?"}
+{"_id":{"$oid":"576c9ccfc2cd44efa19b1bb6"},"answer":"I’m good","last_modified":{"$date":"2016-06-24T02:37:03.923Z"},"user":"Haojun Li","question":"How are your?"}
+{"_id":{"$oid":"576d7b47b7d8ebe9722820bd"},"question":"Is Haojun stupid?","last_modified":{"$date":"2016-06-24T18:26:15.519Z"},"user":"James Uejio","answer":"yes"}
+{"_id":{"$oid":"576d7d21b7d8ebea66b83ec9"},"question":"What benefits do interns have?","answer":"Knowledge","last_modified":{"$date":"2016-06-24T18:34:09.365Z"},"user":"James Uejio"}
 {"_id":{"$oid":"576c9ce5c2cd44efa19b1bb7"},"answer":"I’m a bot","last_modified":{"$date":"2016-06-24T02:37:25.152Z"},"user":"Haojun Li","question":"What are you?"}
+{"_id":{"$oid":"576d7e7bb7d8ebeb4d2e6f7d"},"user":"James Uejio","last_modified":{"$date":"2016-06-24T18:39:55.253Z"},"answer":"Chronobot","question":"Who are you?"}
