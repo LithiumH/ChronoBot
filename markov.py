@@ -14,7 +14,14 @@ convs = db.convs
 
 def get_conv(p1='', p2='', p3=''):
 	cursor = convs.find({'p3':p3, 'p2':p2, 'p1':p1})
-	print(p1)
+	if (cursor.count() > 0):
+		index = rand.randint(0, cursor.count()-1)
+		return cursor[index]['response']
+	cursor = convs.find({'p3':'', 'p2':p2, 'p1':p1})
+	if (cursor.count() > 0):
+		index = rand.randint(0, cursor.count()-1)
+		return cursor[index]['response']
+	cursor = convs.find({'p3':'', 'p2':'', 'p1':p1})
 	if (cursor.count() > 0):
 		index = rand.randint(0, cursor.count()-1)
 		return cursor[index]['response']
