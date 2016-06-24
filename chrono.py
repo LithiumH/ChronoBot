@@ -3,7 +3,6 @@ from pymongo import MongoClient
 import datetime
 from similarity import similarity
 from models.user import User
-from datetime import datetime
 
 
 client = MongoClient('localhost', 27017)
@@ -70,7 +69,7 @@ def get_answer(question, threshold=0.05):
 
 def set_answer(question, answer, username):
 	"""This function sets a question to an answer. user param means whoever answered it"""
-	date_time = datetime.utcnow();
+	date_time = datetime.datetime.utcnow();
 	cursor = faq.find({'question' : question})
 	if cursor.count() > 0:
 		update_result = faq.update_one({'question': question}, {
@@ -102,10 +101,10 @@ def convert_to_user(user_id, data_map):
 
 def get_all_user():
 	cursor = users.find()
-	users = []
+	people = []
 	for u in cursor:
-		users += [convert_to_user(u['user_id'], u['data_map'])]
-	return users
+		people += [convert_to_user(u['user_id'], u['data_map'])]
+	return people
 
 def get_user(user_id):
 	cursor = users.find({'user_id' : user_id})
