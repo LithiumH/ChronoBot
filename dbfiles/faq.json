@@ -1,4 +1,4 @@
 {"_id":{"$oid":"576c6961c2cd44dd298bc22e"},"answer":"b","last_modified":{"$date":"2016-06-23T23:03:29.379Z"},"user":"a","question":"a"}
 {"_id":{"$oid":"576c9ccfc2cd44efa19b1bb6"},"answer":"I’m good","last_modified":{"$date":"2016-06-24T02:37:03.923Z"},"user":"Haojun Li","question":"How are your?"}
-{"_id":{"$oid":"576c9ce5c2cd44efa19b1bb7"},"answer":"I’m a bot","last_modified":{"$date":"2016-06-24T02:37:25.152Z"},"user":"Haojun Li","question":"What are you?"}
 {"_id":{"$oid":"576ca57bc2cd44f2fa00b98a"},"question":"How are you?","answer":"I’m fine","user":"Haojun Li","last_modified":{"$date":"2016-06-24T03:14:03.990Z"}}
+{"_id":{"$oid":"576c9ce5c2cd44efa19b1bb7"},"answer":"I’m a bot","last_modified":{"$date":"2016-06-24T02:37:25.152Z"},"user":"Haojun Li","question":"What are you?"}

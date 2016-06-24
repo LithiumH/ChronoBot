@@ -30,4 +30,8 @@ def get_conv(p1='', p2='', p3=''):
 def set_conv(response, p1='', p2='', p3=''):
 	post = {'p3':p3, 'p2':p2, 'p1':p1, 'response':response}
 	update_result = convs.insert_one(post).inserted_id
+	post = {'p3':p3, 'p2':p2, 'p1':'', 'response':response}
+	update_result = convs.insert_one(post).inserted_id
+	post = {'p3':p3, 'p2':'', 'p1':'', 'response':response}
+	update_result = convs.insert_one(post).inserted_id
 	return True
