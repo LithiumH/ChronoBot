@@ -4,6 +4,7 @@ import datetime
 from datetime import timedelta
 import time
 import smtplib
+import re
 from openpyxl.drawing.image import Image
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
@@ -11,9 +12,14 @@ from email.mime.text import MIMEText
 from email import encoders
 from constants import *
 
-
-toaddr = ["appdynamicshackthon@gmail.com"]
 fromaddr = "appdynamicshackthon@gmail.com"
+
+#TODO THIS IS VERY UGLY, WILL CHANGE IF TIME
+def parse_email(mailtolink):
+	regex = '<mailto.*\|'
+	m = re.search(regex, mailtolink)
+	res = m.group(0)
+	return res[8:-1]
 
 def lastday(d, day_name):
 	days_of_week = ['sunday','monday','tuesday','wednesday', 'thursday','friday','saturday']
@@ -55,10 +61,11 @@ def generate_specific(fullname, date, mon, tue, wed, thur, fri):
 	xfile.save(new_file_name)
 	return new_file_name
 
-def send_email(name, d, filename, filepath, manager):
+def send_email(name, email,d, filename, filepath, manager):
+	toaddr = parse_email(email)
 	msg = MIMEMultipart()
 	msg['From'] = fromaddr
-	msg['To'] = ','.join(toaddr)
+	msg['To'] = toaddr
 	last_week = d - timedelta(days=6)
 	date = last_week.strftime('%m/%d') + " - " + d.strftime('%m/%d')
 	msg['Subject'] = "Timesheet: " + date
@@ -79,6 +86,8 @@ def send_email(name, d, filename, filepath, manager):
 	server.starttls()
 	server.login(fromaddr, "slackthon") #put password here
 	text = msg.as_string()
+	print(fromaddr)
+	print(toaddr)
 	server.sendmail(fromaddr, toaddr, text)
 	server.quit()
 
