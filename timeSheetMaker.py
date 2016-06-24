@@ -12,7 +12,6 @@ from email import encoders
 from constants import *
 
 
-toaddr = ["appdynamicshackthon@gmail.com"]
 fromaddr = "appdynamicshackthon@gmail.com"
 
 def lastday(d, day_name):
@@ -36,12 +35,13 @@ def generate():
 	generate_specific(date,8,8,8,8,8)
 	# send_email(date)
 
-def generate_specific(fullname, date, mon, tue, wed, thur, fri):
+def generate_specific(fullname, date, job, mon, tue, wed, thur, fri):
 	"""
 	the date should be in the format mm-dd-yyyy
 	"""
 	xfile = openpyxl.load_workbook(filepath)
 	sheet = xfile.get_sheet_by_name('Time Card')
+	sheet['B19'] = job
 	sheet['C8'] = fullname
 	sheet['C19'] = mon
 	sheet['E19'] = tue
@@ -49,16 +49,16 @@ def generate_specific(fullname, date, mon, tue, wed, thur, fri):
 	sheet['I19'] = thur
 	sheet['K19'] = fri
 	sheet['O8'] = date
-	sheet['K35'] = date
+	sheet['K35'] = datetime.date.today()
 	#add_signature_image(sheet)
 	new_file_name = './temp/' + fullname + '_Timesheet' + '_' + date.strftime('%m%d%Y') + '_' + '.xlsx'
 	xfile.save(new_file_name)
 	return new_file_name
 
-def send_email(name, d, filename, filepath, manager):
+def send_email(email, name, d, filename, filepath, manager):
 	msg = MIMEMultipart()
 	msg['From'] = fromaddr
-	msg['To'] = ','.join(toaddr)
+	msg['To'] = email
 	last_week = d - timedelta(days=6)
 	date = last_week.strftime('%m/%d') + " - " + d.strftime('%m/%d')
 	msg['Subject'] = "Timesheet: " + date
@@ -79,7 +79,7 @@ def send_email(name, d, filename, filepath, manager):
 	server.starttls()
 	server.login(fromaddr, "slackthon") #put password here
 	text = msg.as_string()
-	server.sendmail(fromaddr, toaddr, text)
+	server.sendmail(fromaddr, email, text)
 	server.quit()
 
 #CURRENTLY UNUSED -- USE THIS IN CASE WE WANT A TEXT SIGNATURE INSTAED OF THE IMAGE
