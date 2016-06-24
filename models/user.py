@@ -9,3 +9,4 @@ class User(object):
 		self.step = 0
 		self.email = ''
 		self.start_date = None
+		self.chrono = False
