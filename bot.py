@@ -32,7 +32,7 @@ class Listener(object):
                 while True:
                     greeting = await websocket.recv()
                     event = json.loads(greeting)
-                    print(event)            
+                    print(event)
                     if 'type' in event and event['type'] == 'message':
                         text = event['text']
                         if '<@U1KDS89PW>' in text or event['channel'] == 'D1KDUJZFG':
@@ -61,6 +61,7 @@ class Listener(object):
                                         await websocket.send(self.make_json(channel, ping + 'What is your email?'))
                                     if step == 1:
                                         user.email = text
+                                        print(text)
                                         await websocket.send(self.make_json(channel, ping + 'What is your manager\'s first name'))
                                     elif step == 2:
                                         user.manager = text
@@ -77,8 +78,8 @@ class Listener(object):
                                     if text == 'yes':
                                         date = datetime.date.today()
                                         new_date = lastday(date, 'sunday')
-                                        path = self.generate_default(user.name, user.role, new_date)
-                                        send_email(user.name,new_date, 'myTimeSheet.xlsx', path, user.manager)
+                                        path = self.generate_default(user.name, new_date)
+                                        send_email(user.name, user.email, new_date, 'myTimeSheet.xlsx', path, user.manager)
                                         await websocket.send(self.make_json(channel, ping + 'BOOM! Your timesheet is sent'))
                                     else:
                                         args = text.split(' ')
@@ -88,7 +89,7 @@ class Listener(object):
                                             new_date = lastday(date, 'sunday')
                                             path = generate_specific(user.name, new_date, user.role, args[0], args[1], args[2], args[3], args[4], args[5])
                                             date = datetime.datetime.strptime(args[0], '%m-%d-%Y')
-                                            send_email(user.email, user.name, lastday(date, 'sunday'), 'myTimeSheet.xlsx', path, user.manager)
+                                            send_email(user.name, user.email, lastday(date, 'sunday'), 'myTimeSheet.xlsx', path, user.manager)
                                     user.state = ''
                                 elif user.state == 'quit':
                                     for k,v in self.user_map.iteritems():

@@ -4,7 +4,6 @@ import datetime
 from similarity import similarity
 from models.user import User
 
-
 client = MongoClient('localhost', 27017)
 db = client.interns
 logs = db.logs
@@ -14,11 +13,13 @@ users = db.users
 def log_activity(user, log):
     return log_activity_time(user, datetime.datetime.utcnow(), log)
 
-def log_activity_time(user, date_time, log, start_date):
+# datetime.datetime(1973, 01, 18, 3, 45, 50)
+def log_activity_time(username, date_time, log, start_date, team):
 	dur = date_time - start_date
-	post = {'author': user,
+	post = {'author': username,
 			'date': date_time,
-			'duration': dur.days,
+			'duration': dur.seconds,
+			'team': team,
 			'log': log}
 	post_id = logs.insert_one(post).inserted_id
 	return post_id
@@ -26,23 +27,23 @@ def log_activity_time(user, date_time, log, start_date):
 def previous(userid, date_time):
 	user = get_user(userid)
 	dur = date_time - user.start_date
-	dur = dur.days
-	if get_user(userid) != None:
+	dur = dur.seconds
+	if user != None:
 		post = logs.find({'author': user.name, \
 						   'team': user.team, \
-						   'date': {'$lt': date_time, '$gt': user.start_date}}).sort({'date': -1}).limit(1)
+						   'date': {'$lt': date_time, '$gt': user.start_date}}).sort({'date': -1}).limit(1)[0]
 	else:
 		post1 = logs.find({'team': user.team, \
-						   'duration': {'$gte': dur}}).sort({'duration': 1}).limit(1)
+						   'duration': {'$gte': dur}}).sort({'duration': 1}).limit(1)[0]
 		post2 = logs.find({'team': user.team, \
-						   'duration': {'$lte': dur}}).sort({'duration': -1}).limit(1)
-		diff1 = post1[0]['duration'] - dur
-		diff2 = dur - post2[0]['duration']
+						   'duration': {'$lte': dur}}).sort({'duration': -1}).limit(1)[0]
+		diff1 = post1['duration'] - dur
+		diff2 = dur - post2['duration']
 		if diff1 > diff2:
 			post = post1
 		else:
 			post = post2
-	return post
+	return post['log']
 
 def find_latest(user):
     return find_latest_datetime(user, datetime.datetime.utcnow())
@@ -110,7 +111,16 @@ def get_user(user_id):
 	cursor = users.find({'user_id' : user_id})
 	if cursor.count() > 0:
 		data_map = cursor[0]['data_map']
-		return convert_to_user(user_id, data_map)
+		user = User(user_id)
+		user.name = data_map['name']
+		user.role = data_map['role']
+		user.manager = data_map['manager']
+		user.state = data_map['state']
+		user.team = data_map['team']
+		user.step = data_map['step']
+		user.email = data_map['email']
+		user.start_date = data_map['start_date']
+		return user
 	return None
 
 def set_user(user_id, user):
@@ -120,7 +130,8 @@ def set_user(user_id, user):
 			'state' : user.state,
 			'team' : user.team,
 			'step' : user.step,
-			'email' : user.email}
+			'email' : user.email,
+			'start_date' : user.start_date}
 	this_user = get_user(user_id)
 	if this_user:
 		update_result = users.update_one({'user_id' : user_id}, {
