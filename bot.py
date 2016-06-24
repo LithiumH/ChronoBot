@@ -109,7 +109,7 @@ class Listener(object):
                                 elif 'yes' in text and user.step == 6:
                                     user.step = 10
                                     await websocket.send(self.make_json(channel, ping + 'What is the answer?'))
-                                elif get_answer(text, 0.3) and user.step != 10:
+                                elif get_answer(text, 0.5) and user.step != 10:
                                     await websocket.send(self.make_json(channel, ping + get_answer(text, 0.5)))
                                     user.state = ''
                                 elif user.step == 10:
