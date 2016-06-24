@@ -1,0 +1,7 @@
+{"_id":{"$oid":"576ca87dc2cd44f3aa42f06b"},"duration":2839,"log":"I did a hackathon today","team":"Java APM","author":"U1KDTCAER","date":{"$date":"2016-06-24T03:26:53.515Z"}}
+{"_id":{"$oid":"576c96e8c2cd44ed3626ecae"},"log":"I did something!","team":"Java APM","duration":330,"date":{"$date":"2016-06-24T02:11:52.689Z"},"author":"U1KDTCAER"}
+{"_id":{"$oid":"576c9d84c2cd44efe9a90409"},"team":"Java APM","author":"U1KDTCAER","log":"I did nothing","date":{"$date":"2016-06-24T02:40:04.601Z"},"duration":30}
+{"_id":{"$oid":"576ca8acc2cd44f3aa42f06c"},"duration":2885,"log":"I did a lot of stuff today!","team":"Java APM","author":"U1KDTCAER","date":{"$date":"2016-06-24T03:27:40.058Z"}}
+{"_id":{"$oid":"576cab3cc2cd44f53b2955c5"},"team":"Java APM","date":{"$date":"2016-06-24T03:38:36.410Z"},"duration":3542,"log":"I realized I did not finish my hackathon project so I’m staying","author":"U1KDTCAER"}
+{"_id":{"$oid":"576c95cbc2cd44ecd9720ea3"},"team":"Java APM","log":"I did nothing","author":"U1KDTCAER","date":{"$date":"2016-06-24T02:07:07.787Z"},"duration":45}
+{"_id":{"$oid":"576caaccc2cd44f51d97b8ed"},"duration":3429,"team":"Java APM","author":"U1KDTCAER","date":{"$date":"2016-06-24T03:36:44.085Z"},"log":"I have partially finished my hackathon project. I’m very tired and I’m going home"}
