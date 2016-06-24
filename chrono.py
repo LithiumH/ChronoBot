@@ -101,7 +101,7 @@ def convert_to_user(user_id, data_map):
 	return user
 
 def get_all_user():
-	cursor = user.find()
+	cursor = users.find()
 	users = []
 	for u in cursor:
 		users += [convert_to_user(u['user_id'], u['data_map'])]
