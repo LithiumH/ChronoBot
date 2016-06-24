@@ -39,12 +39,6 @@ def add_signature_image(sheet):
 	img.anchor(sheet.cell('E35'))
 	sheet.add_image(img)
 
-def generate():
-	date = datetime.date.today()
-	date = closest_sunday(date)
-	generate_specific(date,8,8,8,8,8)
-	# send_email(date)
-
 def generate_specific(fullname, date, job, mon, tue, wed, thur, fri):
 	"""
 	the date should be in the format mm-dd-yyyy
@@ -60,9 +54,7 @@ def generate_specific(fullname, date, job, mon, tue, wed, thur, fri):
 	sheet['K19'] = fri
 	sheet['O8'] = date.strftime('%m/%d/%Y')
 	sheet['B35'] = fullname
-	#+ " " + datetime.date.today().strftime('%m/%d/%Y')
 	sheet['H35'] = datetime.date.today().strftime('%m/%d/%Y')
-	#add_signature_image(sheet)
 	new_file_name = './temp/' + fullname + '_Timesheet' + '_' + date.strftime('%m%d%Y') + '_' + '.xlsx'
 	xfile.save(new_file_name)
 	return new_file_name
@@ -94,13 +86,5 @@ def send_email(name, email,d, filename, filepath, manager):
 	text = msg.as_string()
 	server.sendmail(fromaddr, toaddr, text)
 	server.quit()
-
-#CURRENTLY UNUSED -- USE THIS IN CASE WE WANT A TEXT SIGNATURE INSTAED OF THE IMAGE
-def add_signature_text(filename):
-	xfile = openpyxl.load_workbook(filepath)
-	sheet = xfile.get_sheet_by_name('Time Card')
-	new_file_name = './temp/' + fullname + '_Timesheet' + '_' + date.strftime('%m%d%Y') + '_' + '.xlsx'
-	xfile.save(new_file_name)
-	return new_file_name
 
 
