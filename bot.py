@@ -19,7 +19,6 @@ class Listener(object):
         for u in get_all_user():
             u.previous_conv = ['', '', '']
             self.user_map[u.unique_id] = u
-        print(self.user_map)
 
     def start(self):
         token = 'xoxb-53468281812-uwQohEw49nWfhcy8N2myHv8H'
@@ -103,11 +102,6 @@ class Listener(object):
                                         date = datetime.datetime.strptime(args[0], '%m-%d-%Y')
                                         send_email(user.name, user.email, closest_sunday(date), 'myTimeSheet.xlsx', path, user.manager)
                                 user.state = ''
-                            elif user.state == 'quit':
-                                for k,v in self.user_map.iteritems():
-                                    set_user(u, v)
-                                user.chrono = False
-                                continue
                             if user.state == 'faq':
                                 if text == 'no' and user.step == 6: # Using step as indicator of which state...
                                     await websocket.send(self.make_json(channel, ping + 'That\'s too bad.'))
@@ -132,6 +126,7 @@ class Listener(object):
                             if user.state == 'random':
                                 if text[0:4] == 'say:':
                                     set_conv(text[5:], *user.previous_conv)
+                                    user.previous_conv.pop(0)
                                     await websocket.send(self.make_json(channel, 'Ok I\'ll say that next time'))
                                 user.state = ''
                                 user.chrono = False
