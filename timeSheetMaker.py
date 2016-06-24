@@ -21,10 +21,13 @@ def parse_email(mailtolink):
 	res = m.group(0)
 	return res[8:-1]
 
-def lastday(d, day_name):
+def closest_sunday(d):
 	days_of_week = ['sunday','monday','tuesday','wednesday', 'thursday','friday','saturday']
-	target_day = days_of_week.index(day_name.lower())
-	delta_day = target_day - d.isoweekday()
+	today = d.isoweekday()
+	if(today > 4):
+		delta_day = 7-today
+	else:
+		delta_day = 0 - d.isoweekday()
 	return d + timedelta(days=delta_day)
 
 def add_signature_image(sheet):
@@ -38,7 +41,7 @@ def add_signature_image(sheet):
 
 def generate():
 	date = datetime.date.today()
-	date = lastday(date, 'sunday')
+	date = closest_sunday(date)
 	generate_specific(date,8,8,8,8,8)
 	# send_email(date)
 
