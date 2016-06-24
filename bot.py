@@ -3,7 +3,6 @@ import asyncio
 import requests
 import json
 import time
-import datetime
 import pickle
 import pymongo
 from pymongo import MongoClient
@@ -17,6 +16,9 @@ class Listener(object):
         # self.state = '' # state can be timesheet-init, or an empty string
         self.chrono = False
         self.user_map = {}
+        for u in get_all_user():
+            self.user_map[u.unique_id] = u
+        print(self.user_map)
 
     def start(self):
         token = 'xoxb-53468281812-uwQohEw49nWfhcy8N2myHv8H'
@@ -89,8 +91,8 @@ class Listener(object):
                                             send_email(user.email, user.name, lastday(date, 'sunday'), 'myTimeSheet.xlsx', path, user.manager)
                                     user.state = ''
                                 elif user.state == 'quit':
-                                    for u in self.user_map:
-                                        set_user(u, self.user_map[u])
+                                    for k,v in self.user_map.iteritems():
+                                        set_user(u, v)
                                     chrono = False
                                     continue
                                 if user.state == 'faq':
@@ -140,6 +142,9 @@ class Listener(object):
             new_text = name + 'Would you like to use defaults? If not specify the date' + \
                     '[mm-dd-yyyy] and hours worked each day separated by spaces.'
             state = 'timesheet-init'
+        elif 'quit' in text:
+            new_text = 'Good bye.'
+            state = 'quit'
         elif 'register me' in text:
             new_text = name + 'You have already registered...'
         elif text[len(text) - 1] == '?':
