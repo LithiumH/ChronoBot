@@ -10,4 +10,4 @@ class User(object):
 		self.email = ''
 		self.start_date = None
 		self.chrono = False
-		self.previous_conv = []
+		self.previous_conv = ['', '', '']

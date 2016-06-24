@@ -17,7 +17,7 @@ class Listener(object):
         # self.state = '' # state can be timesheet-init, or an empty string
         self.user_map = {}
         for u in get_all_user():
-            u.previous_conv = []
+            u.previous_conv = ['', '', '']
             self.user_map[u.unique_id] = u
         print(self.user_map)
 
@@ -57,6 +57,7 @@ class Listener(object):
                             user.chrono = True
                         if user.chrono or event['channel'][0] == 'D':
                             step = user.step
+                            print(user.state)
                             if user.state == '':
                                 user.state, new_text = self.switch_state(user, text, ping)
                                 if new_text:

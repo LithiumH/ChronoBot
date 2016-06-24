@@ -1,7 +1,1 @@
-{"_id":{"$oid":"576ca562c2cd44f2fa00b988"},"p1":"Hello!","p2":"","response":"Hello!","p3":""}
-{"_id":{"$oid":"576c80dcc2cd44e6ce8f7f09"},"p3":"","response":"Hello","p2":"","p1":""}
-{"_id":{"$oid":"576ca486c2cd44f2c29cb54c"},"p1":"Hello","p2":"say Hello!","response":"Hello!","p3":""}
-{"_id":{"$oid":"576ca419c2cd44f23266e31d"},"p3":"","p1":"Hello","p2":"","response":"ello!"}
-{"_id":{"$oid":"576ca596c2cd44f2fa00b98b"},"p1":"Hello!","p2":"Hello!","response":"I said Hello twice already..","p3":"Hello!"}
-{"_id":{"$oid":"576ca567c2cd44f2fa00b989"},"p1":"Hello!","p2":"Hello!","response":"Hello!","p3":""}
-{"_id":{"$oid":"576ca5acc2cd44f2fa00b98c"},"p1":"Hello!","p2":"Hello!","response":"I don’t want to say hello anymore","p3":"Hello"}
+{"_id":{"$oid":"576d78bec2cd440402a54ca7"},"p1":"","response":"Hello","p3":"Hello","p2":""}
