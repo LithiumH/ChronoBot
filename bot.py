@@ -21,7 +21,7 @@ class Listener(object):
             self.user_map[u.unique_id] = u
 
     def start(self):
-        token = 'xoxb-53468281812-uwQohEw49nWfhcy8N2myHv8H'
+        token = 'some token'
         url = 'https://slack.com/api/rtm.start'
         response = requests.get(url + '?token=' + token)
         payload = json.loads(response.text)
